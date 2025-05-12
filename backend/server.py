@@ -6,7 +6,7 @@ from openai import OpenAI
 import uuid
 
 client = OpenAI(
-    api_key="93ab58a7-329e-4f02-ba2e-8d5d1f63ee4e", # 请替换成您的ModelScope SDK Token
+    api_key="", # 请替换成您的ModelScope SDK Token
     base_url="https://api-inference.modelscope.cn/v1/"
 )
 port = 8000
