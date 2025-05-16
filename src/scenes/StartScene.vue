@@ -66,6 +66,7 @@ const assetsToPreload = [
   '/assets/backgrounds/quiz-scene.png',
   '/assets/effects/brush-stroke.png',
   '/assets/effects/confetti.gif',
+  // '/assets/text/questions.jsonl',
 ]
 
 const progressPercent = computed(() => {

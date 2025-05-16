@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-type SceneType = 'start' | 'intro' | 'world' | 'quiz';
+type SceneType = 'start' | 'intro' | 'world' | 'quiz' | 'morse';
 type VideoType = 'intro' | 'intro2' | 'world' | 'quiz' | 'stinger' | 'credits' | '';
 export const useGameStore = defineStore('game', {
   state: () => ({

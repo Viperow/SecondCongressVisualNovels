@@ -7,9 +7,9 @@ import uuid
 
 client = OpenAI(
     api_key="", # 请替换成您的ModelScope SDK Token
-    base_url="https://api-inference.modelscope.cn/v1/"
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
 )
-port = 8000
+port = 10081
 
 # 内存中的会话存储
 # { userId: { npcId: [{"role": "user/assistant", "content": "xxx"}, ...] } }
@@ -691,9 +691,11 @@ async def handler(websocket):
             # 调用OpenAI接口流式回复
             response =await asyncio.to_thread(
                 client.chat.completions.create,
-                model="Qwen/Qwen2.5-72B-Instruct",
+               #  model="Qwen/Qwen2.5-72B-Instruct",
+                model="qwen-turbo-latest",
                 messages=sessions[user_id][npc_id],
-                stream=True
+                stream=True,
+                extra_body={"enable_thinking": False},
             )
 
             full_answer = ""

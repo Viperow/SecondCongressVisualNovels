@@ -14,6 +14,7 @@ import StartScene from './scenes/StartScene.vue'
 import IntroScene from './scenes/IntroScene.vue'
 import WorldScene from './scenes/WorldScene.vue'
 import QuizScene from './scenes/QuizScene.vue'
+import MorseScene from './scenes/MorseScene.vue'
 
 const { currentScene } = storeToRefs(useGameStore())
 
@@ -23,6 +24,7 @@ const sceneComponent = computed(() => {
     case 'intro': return IntroScene
     case 'world': return WorldScene
     case 'quiz': return QuizScene
+    case 'morse': return MorseScene
     default: return StartScene
   }
 })

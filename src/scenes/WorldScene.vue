@@ -13,7 +13,7 @@
     <!-- 聚焦模式 -->
     <DialogueOverlay :visible="focused" :npcName="focusedNpcName" :npcImage="focusedNpcImage" :response="response"
       :loading="loading" mode="dialogue" @ask="ask" @return="clearFocus" />
-    <button class="awake-btn" @click="enterQuiz">醒来 ></button>
+    <button class="awake-btn" @click="enterNextScene">继续 ></button>
   </div>
 </template>
 
@@ -159,8 +159,7 @@ async function ask(input: string) {
   userInput.value = ''
 
   if (!socket || socket.readyState !== WebSocket.OPEN) {
-    socket = new WebSocket('ws://86.38.216.193:8000/ws/ask')  // 后端地址
-    // socket = new WebSocket('ws://localhost:8000/ws/ask')  // 后端地址
+    socket = new WebSocket('ws://localhost:8000/ws/ask')  // 后端地址
     await new Promise((resolve, reject) => {
       socket!.onopen = resolve
       socket!.onerror = reject
@@ -175,7 +174,7 @@ async function ask(input: string) {
   socket.onmessage = (event) => {
     const msg = event.data
     if (msg === '' || msg === "[[DONE]]") {
-      // isTyping.value = false
+      isTyping.value = false
       // loading.value = false
       return
     }
@@ -220,8 +219,8 @@ function typewriterFrame() {
       }
     } else {
       rafId = null
-      isTyping.value = false
-      loading.value = false
+      if (!isTyping.value)
+        loading.value = false
       return  // 没有字了就退出，不要再循环
     }
   }
@@ -243,10 +242,8 @@ async function typewriterEffect(text: string) {
   }
 }
 
-function enterQuiz() {
-  game.currentVideo = 'intro2'
-  game.nextScene = 'quiz'
-  game.goTo('intro')
+function enterNextScene() {
+  game.goTo('morse')
 }
 </script>
 

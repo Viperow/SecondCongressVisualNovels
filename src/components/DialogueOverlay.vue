@@ -248,6 +248,7 @@ textarea::placeholder {
 
 button {
     height: 60px;
+    width: 138px;
     padding: 0 1rem;
     border: none;
     border-radius: 8px;
