@@ -6,7 +6,7 @@ from openai import OpenAI
 import uuid
 
 client = OpenAI(
-    api_key="", # 请替换成您的ModelScope SDK Token
+    api_key="sk-8071da6754fe4cd09a56948f3c07e27c", # 请替换成您的ModelScope SDK Token
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
 )
 port = 10081

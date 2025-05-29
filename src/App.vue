@@ -15,6 +15,9 @@ import IntroScene from './scenes/IntroScene.vue'
 import WorldScene from './scenes/WorldScene.vue'
 import QuizScene from './scenes/QuizScene.vue'
 import MorseScene from './scenes/MorseScene.vue'
+import SafeScene from './scenes/SafeScene.vue'
+import AskScene from './scenes/AskScene.vue'
+import PasswordScene from './scenes/PasswordScene.vue'
 
 const { currentScene } = storeToRefs(useGameStore())
 
@@ -25,6 +28,9 @@ const sceneComponent = computed(() => {
     case 'world': return WorldScene
     case 'quiz': return QuizScene
     case 'morse': return MorseScene
+    case 'safe': return SafeScene
+    case 'ask':return AskScene
+    case 'pas':return PasswordScene
     default: return StartScene
   }
 })

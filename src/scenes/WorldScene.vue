@@ -159,7 +159,7 @@ async function ask(input: string) {
   userInput.value = ''
 
   if (!socket || socket.readyState !== WebSocket.OPEN) {
-    socket = new WebSocket('ws://localhost:8000/ws/ask')  // 后端地址
+    socket = new WebSocket('ws://localhost:10081/ws/ask')  // 后端地址
     await new Promise((resolve, reject) => {
       socket!.onopen = resolve
       socket!.onerror = reject
