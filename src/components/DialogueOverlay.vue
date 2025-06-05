@@ -1,51 +1,123 @@
 <template>
+
     <div id="dialogue-scene" class="focus-overlay" v-if="visible" @click="onClick">
-        <img v-if="npcImage && mode === 'choice' " :src="currentImage" class="focused-npc-image" />
-        <img v-if="npcImage && mode === 'dialogue' " :src="npcImage" class="focused-npc-image" />
+
+        <img v-if="npcImage && mode === 'choice'" :src="currentImage" class="focused-npc-image" />
+
+        <img v-if="npcImage && mode === 'dialogue'" :src="npcImage" class="focused-npc-image" />
+
+        <img v-if="npcImage && mode === 'fix'" :src="npcImage" class="focused-npc-image" />
+
+ 
 
         <div class="dialogue-box">
+
             <div class="dialogue-header">{{ npcName }}</div>
 
+ 
+
             <div class="dialogue-content" ref="dialogueRef">
+
                 <p>{{ currentText }}</p>
+
             </div>
+
+ 
+
+            <!-- 新增：fix 模式的文本显示 -->
+
+            <div class="dialogue-content" v-if="mode === 'fix'">
+
+                <p>{{ fixText || '默认提示文本' }}</p>
+
+            </div>
+
+ 
 
             <div class="dialogue-input" v-if="mode === 'dialogue'">
+
                 <textarea v-model="userInput" placeholder="请输入你的问题..." />
+
                 <div class="dialogue-buttons">
+
                     <button @click="onAsk" :disabled="loading">{{ loading ? '思考中...' : '提问' }}</button>
+
                     <button @click="onReturn">返回</button>
+
                 </div>
+
+            </div>
+
+ 
+
+            <div class="dialogue-input" v-if="mode === 'fix'">
+
+                <div class="dialogue-buttons">
+
+                    <button @click="onReturn">返回</button>
+
+                </div>
+
             </div>
 
         </div>
+
+ 
 
         <div v-if="mode === 'choice' && !showContinueHint" class="choice-overlay">
+
             <div class="choice-list">
+
                 <button v-for="(opt, index) in currentStep?.options" :key="index" :class="{
+
                     selected: index === selectedIndex,
+
                     correct: selectedIndex !== null && index === currentStep?.answer,
+
                     wrong: selectedIndex === index && index !== currentStep?.answer
+
                 }" @click.stop="selectChoice(index)">
+
                     {{ opt }}
+
                 </button>
+
             </div>
+
         </div>
+
     </div>
+
 </template>
 
+ 
+
 <script setup lang="ts">
+
 import { ref, watch, nextTick, computed } from 'vue'
+
 import type { DialogueStep } from '../stores/types'
 
+ 
+
 const props = defineProps<{
+
     visible: boolean
+
     npcName: string
+
     npcImage: string
+
     response?: string
+
     loading: boolean
-    mode: 'dialogue' | 'choice'
+
+    mode: 'dialogue' | 'choice' | 'fix'
+
     steps?: DialogueStep[]
+
+    fixText?: string // 新增：fix 模式的自定义文本
+
 }>()
 
 const emits = defineEmits(['ask', 'return', 'choice', 'end', 'correct'])
@@ -221,6 +293,50 @@ watch(currentStep, async (step) => {
     align-items: center;
     gap: 0.5rem;
     /* 输入框和按钮之间留点缝隙 */
+}
+.fix-box {
+    position: absolute;
+    bottom: 0;
+    width: 90%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    max-height: 40%;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.fix-header {
+    margin-bottom: 2rem;
+    text-align: left;
+    /* 右对齐 */
+    font-size: 1.8rem;
+    font-weight: bolder;
+    color: #fff;
+    padding-left: 1rem;
+}
+
+.fix-content {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 0.5rem;
+    width: 80%;
+    margin: 0 auto 0.5rem;
+    color: #ffffff;
+    max-height: 150px;
+    font-size: x-large;
+}
+
+
+.fix-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fix-content::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
 }
 
 textarea {

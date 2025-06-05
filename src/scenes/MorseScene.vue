@@ -16,7 +16,7 @@
                 <button @click="resetMorse">重置</button>
             </div>
         </div>
-        <button v-show="gameFinished" class="awake-btn" @click="enterNextScene">醒来 ></button>
+        <button v-show="gameFinished" class="awake-btn" @click="enterNextScene">继续 ></button>
     </div>
 </template>
 
@@ -147,8 +147,8 @@ function stopBeep() {
 
 function enterNextScene() {
     game.currentVideo = 'intro2'
-    game.nextScene = 'quiz'
-    game.goTo('intro')
+    game.nextScene = 'pas'
+    game.goTo('pas')
 }
 </script>
 
