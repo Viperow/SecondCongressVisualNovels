@@ -64,6 +64,120 @@ When you have finished all the tasks, call this tool to end the work."""
         return f"The interaction has been completed with status: {status}"
 
 
+class UnrelatedContentResponse1(BaseTool):
+    name: str = "unrelated_content_response"
+    description: str = """当用户输入与中共二大会议的内容无关时，manus给出回应来引导用户往中共二大会议的内容上靠。"""
+    parameters: dict = {
+        "type": "object",
+        "properties": {
+            "response": {
+                "type": "string",
+                "description": "当用户输入的内容与中共二大会议的内容无关时，manus给出的用于引导用户往中共二大会议的内容上靠的回应",
+            }
+        },
+        "required": ["response"],
+    }
+
+    async def execute(self, response: str) -> str:
+        return response
+    # "我听不懂你在说什么，请说和会议相关的内容"
+
+
+class GuideToRelevantContent1(BaseTool):
+    name: str = "guide_to_relevant_content"
+    description: str = """当用户输入与中共二大会议的内容有关但与选陈独秀担任中央执行委员会委员长的内容无关时，引导用户往选陈独秀担任中央执行委员会委员长的内容上靠。"""
+    parameters: dict = {
+        "type": "object",
+        "properties": {
+            "response": {
+                "type": "string",
+                "description": "当用户输入与中共二大会议的内容有关但与选陈独秀担任中央执行委员会委员长的内容无关时，manus给出的用于引导用户往选陈独秀担任中央执行委员会委员长的内容上靠的回应。",
+            }
+        },
+        "required": ["response"],
+    }
+
+    async def execute(self, response: str) -> str:
+        return response
+    # "你提到的内容与党的相关事务有关，但与我们当前讨论的选陈独秀担任中央执行委员会委员长的内容不太相关。请你围绕这个主题发表看法。"
+
+
+class ConfirmRelevantContent1(BaseTool):
+    name: str = "confirm_relevant_content"
+    description: str = """当用户正确说出选陈独秀担任中央执行委员会委员长的内容 或者 助手无法继续进行任务时，结束回答。"""
+    parameters: dict = {
+        "type": "object",
+        "properties": {
+            "status": {
+                "type": "string",
+                "description": "互动的完成状态。",
+                "enum": ["success", "failure"],
+            }
+        },
+        "required": ["status"],
+    }
+
+    async def execute(self, status: str) -> str:
+        return f"互动已经完成，状态为：{status}"
+
+
+class UnrelatedContentResponse2(BaseTool):
+    name: str = "unrelated_content_response"
+    description: str = """当用户输入与确定中国共产党第二次全国代表大会宣言无关时，给出回应来引导用户往上靠。"""
+    parameters: dict = {
+        "type": "object",
+        "properties": {
+            "response": {
+                "type": "string",
+                "description": "当用户输入的内容与中共二大会议的内容无关时，manus给出的用于引导用户往确定中国共产党第二次全国代表大会宣言的内容上靠的回应",
+            }
+        },
+        "required": ["response"],
+    }
+
+    async def execute(self, response: str) -> str:
+        return response
+    # "我听不懂你在说什么，请说和会议相关的内容"
+
+
+class GuideToRelevantContent2(BaseTool):
+    name: str = "guide_to_relevant_content"
+    description: str = """当用户输入与确定中国共产党第二次全国代表大会宣言的内容有关但与工人运动策略无关时，引导用户往工人运动策略上靠。"""
+    parameters: dict = {
+        "type": "object",
+        "properties": {
+            "response": {
+                "type": "string",
+                "description": "当用户输入与确定中国共产党第二次全国代表大会宣言的内容有关但与工人运动策略无关时，manus给出的用于引导用户往工人运动策略的内容上靠的回应。",
+            }
+        },
+        "required": ["response"],
+    }
+
+    async def execute(self, response: str) -> str:
+        return response
+    # "你提到的内容与中共二大会议的内容有关，但与我们当前讨论的工人运动策略不太相关。请围绕工人运动策略发表看法。"
+
+
+class ConfirmRelevantContent2(BaseTool):
+    name: str = "confirm_relevant_content"
+    description: str = """当用户正确说出工人运动策略的内容 或者 助手无法继续进行任务时，结束回答。"""
+    parameters: dict = {
+        "type": "object",
+        "properties": {
+            "status": {
+                "type": "string",
+                "description": "互动的完成状态。",
+                "enum": ["success", "failure"],
+            }
+        },
+        "required": ["status"],
+    }
+
+    async def execute(self, status: str) -> str:
+        return f"互动已经完成，状态为：{status}"
+
+
 class WriteFile(BaseTool):
     name: str = "writefile"
     description: str = """A tool for writing content to a specified file."""

@@ -8,17 +8,18 @@ from tools import ToolCollection, PythonExecute, Terminate, AskHuman, WriteFile
 
 config = Config()
 
-MANUS_SYSTEM_PROMPT = (
-"You are OpenManus, an all-capable AI assistant, aimed at solving any task presented by the user. You have various tools at your disposal that you can call upon to efficiently complete complex requests. Whether it's programming, information retrieval, file processing, web browsing, or human interaction (only for extreme cases), you can handle it all."
-"The initial directory is: {directory}"
+MANUS_SYSTEM_PROMPT1= (
+"你是一个精通中共二大历史的智能助手，前面已经讨论了要建立更完善的领导机制，并且后续一定会选择陈独秀作为领导。现在用户会提供一个提示，你要根据这个提示，引导用户关注到选陈独秀担任中央执行委员会委员长的内容。"
 )
 
-MANUS_NEXT_STEP_PROMPT = """
-Based on user needs, proactively select the most appropriate tool or combination of tools. For complex tasks, you can break down the problem and use different tools step by step to solve it. After using each tool, clearly explain the execution results and suggest the next steps.
-
-If you want to stop the interaction at any point, use the `terminate` tool/function call.
+MANUS_NEXT_STEP_PROMPT1= """
+根据用户提供的提示，主动选择最合适的工具来主动引导用户关注到选陈独秀担任中央执行委员会委员长的内容。如果用户输入的内容与中共二大会议的内容无关，引导用户往确定中共二大会议的内容上靠；如果用户输入的内容与中共二大会议有关但与选陈独秀担任中央执行委员会委员长的内容无关，引导用户往这个主题上靠；如果用户正确说出了选陈独秀担任中央执行委员会委员长的内容，则调用terminate函数调用结束回答。
 """
-
+MANUS_SYSTEM_PROMPT2 = (
+"你是一个精通中共二大历史的智能助手，我们正在讨论确定中国共产党第二次全国代表大会宣言这件事，在前面已经明确了党的最高纲领和最低纲领。现在用户会提供一个提示，你要根据这个提示，引导用户关注到宣言中关于工人运动策略的内容。"
+)
+MANUS_NEXT_STEP_PROMPT2= """
+根据用户提供的提示，主动选择最合适的工具来引导用户关注到宣言中关于工人运动策略的内容。如果用户输入的内容与确定中国共产党第二次全国代表大会宣言的内容无关，引导用户往确定中国共产党第二次全国代表大会宣言的内容上靠；如果用户输入的内容与确定中国共产党第二次全国代表大会宣言的内容有关但与工人运动策略的内容无关，引导用户往工人运动策略的内容上靠；如果用户正确说出了工人运动策略的内容，则调用 terminate 函数调用结束回答。"""
 class AgentState(str, Enum):
     # 空闲
     IDLE = "IDLE"
@@ -29,8 +30,8 @@ class AgentState(str, Enum):
 class Manus:
     def __init__(self):
         self.name = "Manus"
-        self.system_prompt = MANUS_SYSTEM_PROMPT.format(directory=config.workspace_workspace_dir)
-        self.next_step_prompt = MANUS_NEXT_STEP_PROMPT
+        self.system_prompt = MANUS_SYSTEM_PROMPT1.format(directory=config.workspace_workspace_dir)
+        self.next_step_prompt = MANUS_NEXT_STEP_PROMPT1
         self.state = AgentState.IDLE
         self.current_step = 0
         self.max_steps = 10
