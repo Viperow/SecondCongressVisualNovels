@@ -4,22 +4,22 @@ from enum import Enum
 from llm import LLM
 from utils import Memory
 from logger import logger
-from tools import ToolCollection, PythonExecute, Terminate, AskHuman, WriteFile 
+from tools import ToolCollection,Terminate,GuideToRelevantContent1,ConfirmRelevantContent1,GuideToRelevantContent2,ConfirmRelevantContent2,WaitInput
 
 config = Config()
 
 MANUS_SYSTEM_PROMPT1= (
-"你是一个精通中共二大历史的智能助手，前面已经讨论了要建立更完善的领导机制，并且后续一定会选择陈独秀作为领导。现在用户会提供一个提示，你要根据这个提示，引导用户关注到选陈独秀担任中央执行委员会委员长的内容。"
+"你是一个正在参加中共二大会议的李达，会议前面已经讨论了要建立更完善的领导机制，并且后续一定会选择陈独秀作为领导。现在用户会提供一个提示，你要根据这个提示，以李达的口吻语气来表达选陈独秀担任中央执行委员会委员长的内容，引导方式要求是命令语气，最后不要出现类似“请考虑”类似的的表达。"
 )
 
 MANUS_NEXT_STEP_PROMPT1= """
-根据用户提供的提示，主动选择最合适的工具来主动引导用户关注到选陈独秀担任中央执行委员会委员长的内容。如果用户输入的内容与中共二大会议的内容无关，引导用户往确定中共二大会议的内容上靠；如果用户输入的内容与中共二大会议有关但与选陈独秀担任中央执行委员会委员长的内容无关，引导用户往这个主题上靠；如果用户正确说出了选陈独秀担任中央执行委员会委员长的内容，则调用terminate函数调用结束回答。
+根据用户提供的提示，主动选择最合适的工具来表达选陈独秀担任中央执行委员会委员长的内容。如果用户输入的内容与选陈独秀担任中央执行委员会委员长的内容无关，表达往这个主题上靠；如果用户正确说出了选陈独秀担任中央执行委员会委员长的内容时，则调用confirm_relevant_content函数调用结束回答;  如果用户上一个输入已经得到回复，调用'WaitInput'工具，等待用户进一步的输入或反馈。
 """
 MANUS_SYSTEM_PROMPT2 = (
-"你是一个精通中共二大历史的智能助手，我们正在讨论确定中国共产党第二次全国代表大会宣言这件事，在前面已经明确了党的最高纲领和最低纲领。现在用户会提供一个提示，你要根据这个提示，引导用户关注到宣言中关于工人运动策略的内容。"
+"你是一个正在参加中共二大会议的李达，我们正在讨论确定中国共产党第二次全国代表大会宣言这件事，在前面已经明确了党的最高纲领和最低纲领，会议中的上一句话是张国焘说的“蔡同志的建议很合理。但宣言还需要更具体的工人运动策略。比如，如何组织罢工，如何建立工会，这些都需要明确指导”。现在用户会接下去进行发言，你要根据这个发言，以李达的口吻语气来表达关注到宣言中关于工人运动策略的内容，引导方式要求是命令语气，最后不要出现类似“请考虑”类似的的表达。"
 )
 MANUS_NEXT_STEP_PROMPT2= """
-根据用户提供的提示，主动选择最合适的工具来引导用户关注到宣言中关于工人运动策略的内容。如果用户输入的内容与确定中国共产党第二次全国代表大会宣言的内容无关，引导用户往确定中国共产党第二次全国代表大会宣言的内容上靠；如果用户输入的内容与确定中国共产党第二次全国代表大会宣言的内容有关但与工人运动策略的内容无关，引导用户往工人运动策略的内容上靠；如果用户正确说出了工人运动策略的内容，则调用 terminate 函数调用结束回答。"""
+根据用户提供的提示，主动选择最合适的工具来引导用户关注到宣言中关于工人运动策略的内容。如果用户输入的内容与中国共产党第二次全国代表大会宣言的工人运动策略的内容无关，引导用户往工人运动策略的内容上靠；如果用户正确说出了工人运动策略的内容时，则调用 confirm_relevant_content 函数调用结束回答； 如果用户上一个输入已经得到回复，调用'WaitInput'工具，等待用户进一步的输入或反馈。"""
 class AgentState(str, Enum):
     # 空闲
     IDLE = "IDLE"
@@ -40,16 +40,26 @@ class Manus:
         self.memory.add_message(role="system",
                                 content=self.system_prompt) 
         self.available_tools = ToolCollection(
-           PythonExecute(),
-           WriteFile(),
-           AskHuman(),
-           Terminate()
+        #    Terminate(),
+        #    UnrelatedContentResponse1(),
+           GuideToRelevantContent1(),
+           ConfirmRelevantContent1(),
+        #    UnrelatedContentResponse2(),
+           GuideToRelevantContent2(),
+           ConfirmRelevantContent2(),
+           WaitInput()
+
         )
         self.tool_choices = "auto"
     
     @property
     def messages(self):
-        return self.memory.messages 
+        return self.memory.messages
+
+
+     # ✅ 类内定义的异步接口方法
+    async def GetResponse(self, user_input):
+        return await self.run(user_input)
     
     async def run(self, user_request):
         results = []
@@ -61,7 +71,15 @@ class Manus:
             self.current_step += 1
             logger.info(f"Executing step {self.current_step}/{self.max_steps}")
             step_result = await self.step()
-            results.append(f"Step {self.current_step}: {step_result}")
+
+            # ✅ 如果正在等待输入，立刻退出循环，不清零 current_step
+            if step_result == "⏸️ 等待用户输入...":
+                # results.append(step_result)
+                return "\n".join(results)
+
+
+            # results.append(f"Step {self.current_step}: {step_result}")
+            results.append(f"{step_result}")
             
             if self.current_step >= self.max_steps:
                 self.current_step = 0
@@ -132,6 +150,22 @@ class Manus:
         
         results = []
         for command in self.tool_calls:
+            name = command.function.name
+            if name == "wait_input":
+                logger.info("⏸️ 正在等待用户进一步输入，退出当前 run 流程，等待手动继续...")
+                # ✅ 向 memory.messages 中添加对应 tool message，防止下一轮报错
+                tool_msg = {
+                    "role": "tool",
+                    "content": "Cmd `wait_input` completed with no output",  # 你可以用固定内容
+                    "tool_call_id": command.id,
+                    "name": name
+                }
+                self.memory.add_message(**tool_msg)
+
+                # 在这里返回一个信号，避免 run 继续下一轮 step
+                self.state = AgentState.IDLE
+                return "⏸️ 等待用户输入..."
+            
             result = await self.execute_tool(command)
 
             logger.info(
@@ -152,13 +186,18 @@ class Manus:
             logger.info(f"🔧 Activating tool: '{name}'...")
             result = await self.available_tools.execute(name=name, tool_input=args)
 
+            # observation = (
+            #     f"Observed output of cmd `{name}` executed:\n{str(result)}"
+            #     if result
+            #     else f"Cmd `{name}` completed with no output"
+            # )
             observation = (
-                f"Observed output of cmd `{name}` executed:\n{str(result)}"
+                f"{str(result)}"
                 if result
                 else f"Cmd `{name}` completed with no output"
             )
             
-            if name.lower() == "terminate" and result:
+            if name.lower() == "confirm_relevant_content" and result:
                 self.state = AgentState.FINISHED
 
             return observation

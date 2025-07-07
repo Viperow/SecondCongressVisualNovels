@@ -62,36 +62,45 @@ When you have finished all the tasks, call this tool to end the work."""
     async def execute(self, status: str) -> str:
         """Finish the current execution"""
         return f"The interaction has been completed with status: {status}"
-
-
-class UnrelatedContentResponse1(BaseTool):
-    name: str = "unrelated_content_response"
-    description: str = """当用户输入与中共二大会议的内容无关时，manus给出回应来引导用户往中共二大会议的内容上靠。"""
+    
+class WaitInput(BaseTool):
+    name: str = "wait_input"
+    description: str = """如果用户上一个输入已经得到回复，调用'等待用户输入'工具，等待用户进一步的输入或反馈"""
     parameters: dict = {
-        "type": "object",
-        "properties": {
-            "response": {
-                "type": "string",
-                "description": "当用户输入的内容与中共二大会议的内容无关时，manus给出的用于引导用户往中共二大会议的内容上靠的回应",
-            }
-        },
-        "required": ["response"],
     }
 
-    async def execute(self, response: str) -> str:
-        return response
-    # "我听不懂你在说什么，请说和会议相关的内容"
+    async def execute(self) -> str:
+        """Finish the current execution"""
+        return ""
+
+# class UnrelatedContentResponse1(BaseTool):
+#     name: str = "unrelated_content_response"
+#     description: str = """当用户输入与中共二大会议的内容无关时，表达往中共二大会议的内容上靠。"""
+#     parameters: dict = {
+#         "type": "object",
+#         "properties": {
+#             "response": {
+#                 "type": "string",
+#                 "description": "当用户输入的内容与中共二大会议的内容无关时，表达往中共二大会议的内容上靠的回应",
+#             }
+#         },
+#         "required": ["response"],
+#     }
+
+#     async def execute(self, response: str) -> str:
+#         return response
+#     # "我听不懂你在说什么，请说和会议相关的内容"
 
 
 class GuideToRelevantContent1(BaseTool):
     name: str = "guide_to_relevant_content"
-    description: str = """当用户输入与中共二大会议的内容有关但与选陈独秀担任中央执行委员会委员长的内容无关时，引导用户往选陈独秀担任中央执行委员会委员长的内容上靠。"""
+    description: str = """当用户输入与选陈独秀担任中央执行委员会委员长的内容无关时，用命令语气来表达往选陈独秀担任中央执行委员会委员长的内容上靠。"""
     parameters: dict = {
         "type": "object",
         "properties": {
             "response": {
                 "type": "string",
-                "description": "当用户输入与中共二大会议的内容有关但与选陈独秀担任中央执行委员会委员长的内容无关时，manus给出的用于引导用户往选陈独秀担任中央执行委员会委员长的内容上靠的回应。",
+                "description": "当用户输入与选陈独秀担任中央执行委员会委员长的内容无关时，用命令语气来表达往选陈独秀担任中央执行委员会委员长的内容上靠的回应。",
             }
         },
         "required": ["response"],
@@ -121,34 +130,34 @@ class ConfirmRelevantContent1(BaseTool):
         return f"互动已经完成，状态为：{status}"
 
 
-class UnrelatedContentResponse2(BaseTool):
-    name: str = "unrelated_content_response"
-    description: str = """当用户输入与确定中国共产党第二次全国代表大会宣言无关时，给出回应来引导用户往上靠。"""
-    parameters: dict = {
-        "type": "object",
-        "properties": {
-            "response": {
-                "type": "string",
-                "description": "当用户输入的内容与中共二大会议的内容无关时，manus给出的用于引导用户往确定中国共产党第二次全国代表大会宣言的内容上靠的回应",
-            }
-        },
-        "required": ["response"],
-    }
+# class UnrelatedContentResponse2(BaseTool):
+#     name: str = "unrelated_content_response"
+#     description: str = """当用户输入与确定中国共产党第二次全国代表大会宣言无关时，来引导用户往确定中国共产党第二次全国代表大会宣言上靠。"""
+#     parameters: dict = {
+#         "type": "object",
+#         "properties": {
+#             "response": {
+#                 "type": "string",
+#                 "description": "当用户输入的内容与中共二大会议的内容无关时，manus给出的用于引导用户往确定中国共产党第二次全国代表大会宣言的内容上靠的回应",
+#             }
+#         },
+#         "required": ["response"],
+#     }
 
-    async def execute(self, response: str) -> str:
-        return response
-    # "我听不懂你在说什么，请说和会议相关的内容"
+#     async def execute(self, response: str) -> str:
+#         return response
+#     # "我听不懂你在说什么，请说和会议相关的内容"
 
 
 class GuideToRelevantContent2(BaseTool):
     name: str = "guide_to_relevant_content"
-    description: str = """当用户输入与确定中国共产党第二次全国代表大会宣言的内容有关但与工人运动策略无关时，引导用户往工人运动策略上靠。"""
+    description: str = """当与中国共产党第二次全国代表大会宣言的工人运动策略无关时，来引导用户往工人运动策略上靠。"""
     parameters: dict = {
         "type": "object",
         "properties": {
             "response": {
                 "type": "string",
-                "description": "当用户输入与确定中国共产党第二次全国代表大会宣言的内容有关但与工人运动策略无关时，manus给出的用于引导用户往工人运动策略的内容上靠的回应。",
+                "description": "当用户输入与中国共产党第二次全国代表大会宣言的工人运动策略无关时，manus给出的用于引导用户往工人运动策略的内容上靠的回应。",
             }
         },
         "required": ["response"],
