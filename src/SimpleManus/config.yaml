@@ -1,8 +1,0 @@
-model:
-  name: "qwen-max-latest"
-  base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
-  api_key: ""
-  temperature: 0
-
-workspace:
-  workspace_dir: "./workspace"

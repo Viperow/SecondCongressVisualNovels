@@ -1,14 +1,16 @@
 # server.py
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), 'SimpleManus'))
+
 import asyncio
 import websockets
 import json
-from openai import OpenAI
+
+from SimpleManus.llm import LLM
 import uuid
 
-client = OpenAI(
-    api_key="", # 请替换成您的ModelScope SDK Token
-    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
-)
+client = LLM(use_async=False)
 port = 10081
 
 # 内存中的会话存储
@@ -690,7 +692,7 @@ async def handler(websocket):
 
             # 调用OpenAI接口流式回复
             response =await asyncio.to_thread(
-                client.chat.completions.create,
+                client.chat_client.chat.completions.create,
                #  model="Qwen/Qwen2.5-72B-Instruct",
                 model="qwen-turbo-latest",
                 messages=sessions[user_id][npc_id],
