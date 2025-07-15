@@ -131,9 +131,9 @@ function submitCode() {
   isSafeFocused.value = false
 }
 function enterNextScene() {
-    game.currentVideo = 'intro2'
-    game.nextScene = 'quiz'
-    game.goTo('intro')
+    game.meetingTime = 2;
+    game.nextScene = 'meeting'
+    game.goTo(game.nextScene)
 }
 
 function enterBeforeScene() {

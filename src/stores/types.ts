@@ -2,6 +2,7 @@
 export interface DialogueStep {
     type: 'text' | 'choice'
     content: string
+    name?: string
     image?: string
     sound?: string
     effect?: 'confetti' | 'shake' | null

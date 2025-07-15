@@ -42,7 +42,7 @@
 
                     <button @click="onAsk" :disabled="loading">{{ loading ? '思考中...' : '提问' }}</button>
 
-                    <button @click="onReturn">返回</button>
+                    <button @click="onReturn">{{ returnButtonText }}</button>
 
                 </div>
 
@@ -100,7 +100,7 @@ import type { DialogueStep } from '../stores/types'
 
  
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 
     visible: boolean
 
@@ -118,7 +118,11 @@ const props = defineProps<{
 
     fixText?: string // 新增：fix 模式的自定义文本
 
-}>()
+    returnButtonText?: string
+
+}>(), {
+    returnButtonText: '返回',
+})
 
 const emits = defineEmits(['ask', 'return', 'choice', 'end', 'correct'])
 

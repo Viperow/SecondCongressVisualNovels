@@ -18,6 +18,8 @@ import MorseScene from './scenes/MorseScene.vue'
 import SafeScene from './scenes/SafeScene.vue'
 import AskScene from './scenes/AskScene.vue'
 import PasswordScene from './scenes/PasswordScene.vue'
+import ManusScene from './scenes/MeetingScene.vue'
+import MeetingScene from './scenes/MeetingScene.vue'
 
 const { currentScene } = storeToRefs(useGameStore())
 
@@ -31,6 +33,7 @@ const sceneComponent = computed(() => {
     case 'safe': return SafeScene
     case 'ask':return AskScene
     case 'pas':return PasswordScene
+    case 'meeting':return MeetingScene
     default: return StartScene
   }
 })

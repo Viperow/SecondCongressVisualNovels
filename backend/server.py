@@ -8,9 +8,11 @@ import websockets
 import json
 
 from SimpleManus.llm import LLM
+from SimpleManus.Agents import Manus
 import uuid
 
 client = LLM(use_async=False)
+manus_sessions = {}
 port = 10081
 
 # 内存中的会话存储
@@ -664,8 +666,35 @@ npc_system_prompts = {
 ''',
 }
 
-async def handler(websocket):
+async def handler(websocket, path):
     user_id = str(uuid.uuid4())
+
+    if path == "/ws/manus":
+        manus = Manus()
+        manus_sessions[user_id] = manus
+        try:
+            async for message in websocket:
+                data = json.loads(message)
+                question = data.get("question")
+                if not question:
+                    continue
+                try:
+                    answer = await manus.GetResponse(question)
+                except Exception as e:
+                    print(f"发生错误: {e}")
+                    break
+                for ch in answer:
+                    await websocket.send(ch)
+                    await asyncio.sleep(0.01)
+                await websocket.send("[[DONE]]")
+        except websockets.exceptions.ConnectionClosedError:
+            print("连接关闭")
+        except Exception as e:
+            print(f"发生错误: {e}")
+        finally:
+            manus_sessions.pop(user_id, None)
+            print(f"已释放内存，清除 userId={user_id}")
+        return
     try:
         async for message in websocket:
             data = json.loads(message)

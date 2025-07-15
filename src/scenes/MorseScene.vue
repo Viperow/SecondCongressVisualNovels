@@ -147,8 +147,9 @@ function stopBeep() {
 
 function enterNextScene() {
     game.currentVideo = 'intro2'
-    game.nextScene = 'pas'
-    game.goTo('pas')
+    game.meetingTime = 1;
+    game.nextScene = 'meeting'
+    game.goTo(game.nextScene)
 }
 </script>
 
