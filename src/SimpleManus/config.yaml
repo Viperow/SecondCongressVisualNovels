@@ -1,6 +1,6 @@
 model:
   name: "qwen-max-latest"
-  base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  base_url: ""
   api_key: "sk-d31293227f184d8a8063452edd95ee9f"
   temperature: 0
 
