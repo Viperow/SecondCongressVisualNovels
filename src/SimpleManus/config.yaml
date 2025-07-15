@@ -1,7 +1,7 @@
 model:
   name: "qwen-max-latest"
   base_url: ""
-  api_key: "sk-d31293227f184d8a8063452edd95ee9f"
+  api_key: ""
   temperature: 0
 
 workspace:
